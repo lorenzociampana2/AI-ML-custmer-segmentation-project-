@@ -18,7 +18,7 @@ To do it we are going to use a very common business analysis method, which is th
 CLUSTERING METHODS:
 
 In order to perform a good clustering among customers, we decided to use the following methods:
--	K-means clustering: is one of the most  used clustering method, especially in this cases. We had the opportunity in fact to look at some similar business projects on the web where this algorithm is always used;
+-	K-means clustering: is one of the most  used clustering method, especially in this cases. We had the opportunity in fact to look at some similar business projects on the web where this algorithm is always used, especially when we have to scale large datasets;
 -	Hierarchical clustering: Hierarchical clustering is another popular method of grouping data. It creates groups so that data within a group are similar to each other and different from objects in other groups. Clusters are visually represented in a hierarchical tree called a dendrogram.
 -	PCA (Principal Component Analysis): this method is very useful whenever we have to deal with large datasets as it helps us reducing the dimensionality of such datasets and minimizing the amount of useful information so that we can have a clearer and more precise interpretation of it.
 
@@ -33,13 +33,6 @@ In our case it was very propaedeutic because the majority of the future steps wo
 Here we have some examples of our EDA with some plots:
 
 data.head()
-
-0,53cdb2fc8bc7dce0b6741e2150273451,b0830fb4747a6c6d20dea0b8c802d7ef,delivered,2018-07-24 20:41:37,2018-07-26 03:24:27,2018-07-26 14:31:00,2018-08-07 15:27:45,2018-08-13 00:00:00,boleto,1,...,289cdb325fb7e7f891c38608bf9e0962,2018-07-30 03:24:27,118.7,22.76,belo horizonte,SP,perfumaria,29,178,perfumery
-1,86674ccaee19790309333210917b2c7d,1b338293f35549b5e480b9a3d7bbf3cd,delivered,2018-08-09 11:37:35,2018-08-09 14:35:19,2018-08-10 14:34:00,2018-08-14 18:51:47,2018-08-22 00:00:00,credit_card,5,...,289cdb325fb7e7f891c38608bf9e0962,2018-08-13 14:31:29,116.9,18.92,belo horizonte,SP,perfumaria,29,178,perfumery
-2,aee682982e18eb4714ce9f97b15af5e2,8858442ea4d5dc5bb9e118e8f728095d,delivered,2018-07-09 18:46:28,2018-07-11 03:45:45,2018-07-11 15:01:00,2018-07-12 18:14:35,2018-07-18 00:00:00,boleto,1,...,289cdb325fb7e7f891c38608bf9e0962,2018-07-13 03:45:45,118.7,9.34,belo horizonte,SP,perfumaria,29,178,perfumery
-3,d543201a9b42a1402ff97e65b439a48b,971bf8f42a9f8cb3ead257854905b454,delivered,2018-08-21 10:00:25,2018-08-21 10:50:54,2018-08-22 15:21:00,2018-08-28 18:58:22,2018-09-10 00:00:00,credit_card,2,...,289cdb325fb7e7f891c38608bf9e0962,2018-08-23 10:50:54,116.9,22.75,belo horizonte,SP,perfumaria,29,178,perfumery
-4,d543201a9b42a1402ff97e65b439a48b,971bf8f42a9f8cb3ead257854905b454,delivered,2018-08-21 10:00:25,2018-08-21 10:50:54,2018-08-22 15:21:00,2018-08-28 18:58:22,2018-09-10 00:00:00,credit_card,2,...,289cdb325fb7e7f891c38608bf9e0962,2018-08-23 10:50:54,116.9,22.75,belo horizonte,SP,perfumaria,29,178,perfumery
-
 
 We converted the variables into dates by using Pandas and then we distincted date from time:
 
@@ -67,7 +60,8 @@ data.drop_duplicates(keep='first', inplace=True)
 data.reset_index(drop=True, inplace=True)
 
 Outliers Analysis: 
-analyzing some variables, we noticed that in some plots there are data points that exceed the average, for example, in ‘payment value’, which is in our mind one of the principal variable to study for a big firm, we can suppose that there are some customers who have paid an amount of money which is relatively higher than the others and this can affect our analysis in the future:
+analyzing some variables, we noticed that in some plots there are data points that exceed the average, for example, in ‘payment value’, which is in our mind one of the principal variable to study for a big firm, we can suppose that there are some customers who have paid an amount of money which is relatively higher than the others and this can affect our analysis in the future, as we can identify them as 'exceptions'.
+You can clearly see it with the following graph:
 
 plt.figure() 
 data.reset_index().plot(kind='scatter', x='index', y='payment_value', c='gray')
@@ -100,13 +94,18 @@ In order to visualize the correlation we can either print an heatmap matrix in o
 
 Correlation = data.corr()
 sns.heatmap(correlation, xticklabels = correlation.columns, yticklabels = correlation.columns, annot = True)
+![Heatmap.png](https://github.com/Albofornari/275841/blob/main/Images/Heatmap.png)
+In this type of plot, the strength of a relationship is indeed given by positive or negative values. As an exmaple of negative correlation we can take the couple 'payment_installments' and 'product_name_length' which are obviously two different characteristics of a product, which cannot be in relation.
+On the other hand, the highest correlation, which is also highlighted, is the one between 'price' and 'payment_value', because they tell us very similar informations.
+
+Then we used the seaborn's pairplot in order to have pairwise relationships between variables within a large dataset like ours, so that we can visualize everything in only one figure:
 
 sns.pairplot(data)
+![Pairplot.png](https://github.com/Albofornari/275841/blob/main/Images/Pairplot.png)
 
-Plotting the distribution of continuous data variables by using the seaborn’s distplot:
+Then we plotted the distribution of continuous data variables by using the seaborn’s distplot:
 
 Sns.distplot(data[‘price’])
-
 
 
 Now that we have visualized out data in different ways, we can extract from it some insights. To do It we imagine to ask ourselves some questions that we consider to be interesting about the dataset which are the following:
@@ -165,18 +164,44 @@ Before starting with the algorithms themselves, let us explain which validation 
 - Silhouette Score: Silhouette score or silhouette coefficient is a metric whose values are in the interval [-1, 1]. The silhouette value is a measure of how similar an object is to its own cluster (cohesion) compared to other clusters (separation). a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters. If most objects have a high value, then the clustering configuration is appropriate. If many points have a low or negative value, then the clustering configuration may have too many or too few clusters.
 - Calinski Harabasz Score: can be used to evaluate the model when ground truth labels are not known where the validation of how well the clustering has been done is made using quantities and features inherent to the dataset. Higher value of CH index means the clusters are dense and well separated, although there is no “acceptable” cut-off value.
 
-After that, we applied the three methods that we chose and here we have the results for each of them:
-
-Hierarchical Clustering: 
-Silhouette Score: 0.457153; Calinski Harabasz Score: 8814.023578; Davies Bouldin Score: 0.825724
+After that, we applied the three methods that we chose and here we have the results and plots for each of them:
 
 K-Means:
+Before explaining the implementation, let us introduce you to this method, which can be resumed in 4 points:
+1) The algorithm randomly chooses a centroid (which is the center of a cluster) k.
+2) It assigns every data point in the dataset to the nearest centroid, meaning that if that data point is closer to that centroid, it belongs to its cluster
+3) For every cluster, the algorithm recomputes the centroid by taking the average of all the point in the cluster. Since the centroids change, then it assigns the data points to new clusters.
+4) The same process is repeated until no changes in centroids values are produced.
+![Elbow method km.png](https://github.com/Albofornari/275841/blob/main/Images/Elbow%20method.png)
+The first step for the implementation of K-means algorithm was to apply the elbow method in order to find the optimal number of clusters. In our case we had to choose between 3, 4 or 5 clusters. We decided to consider 4 because they seemed to have the clearest scores
+![Kmeans Clustering 3D.png](https://github.com/Albofornari/275841/blob/main/Images/Kmeans%20Clustering%203D.png)
+From the 3D representation of the Kmeans algorithm we can clearly see the 4 clusters. The 3D representation allows us to have a better understanding of the clustering and a clear graphical representation compared to the two-dimensional graph. Form the graph above we can see that Cluster 1(orange cluster) contain costumers that have a spent a low amount of money and with a very low frequency however the last purchase resulted to be recent. Cluster 2(yellow cluster) seems to contains active customers that have a good recency and also an relatively high frequency. Cluster 3(brown cluster) we can deduce that it represents customers that are no longer spending in the store because based on the recency the last purchase was done a long time ago. Cluster 4(purple cluster) represents the customers that are now spending the most in the stores with an high frequency and a high monetary value
+
 Silhouette score: 0.497172; Calinski Harabasz score: 10853.192306; Davies Bouldin: 0.745792
 
+
+Hierarchical Clustering: 
+In this method, clusters are built by creating a tree-based hierarchy which is often represented by a dendogram, which you will see in the nex lines.
+Unlike other methods such as K-means, the number of clusters is decided by the user and the clustering proces is said to be 'deterministic', since assignments won't change as the algorithm is executed multiple times on the same input data.
+
+![Dendogram HC.png](https://github.com/Albofornari/275841/blob/main/Images/Dendogram%20HC.png)
+For what concerns Hierarchical clustering method, we found the optimal number of clusters by using the dendogram, which uses branches of clusters to show how closely objects are related to one another, so those clusters that are located on the same height level are more closely related than clusters that are located on different height levels.
+Also in this case the optimal number was clearly 4.
+![Hierarchical Clustering 3D.png](https://github.com/Albofornari/275841/blob/main/Images/Hierarchical%20Clustering%203D.png)
+Here, we also have a 3D representation of the clusters.
+
+Silhouette Score: 0.457153; Calinski Harabasz Score: 8814.023578; Davies Bouldin Score: 0.825724
+
 PCA: 
+The goal of PCA is to identify the most meaningful basis to re-express data. This new basis will filter out the noise and reveal hidden structures. We want the new basis to be a linear combination of the original basis.
+Let X be a dataset with m observations and n features, so X is an m × n matrix. Let Y be a new representation of X, another m × n matrix related to X by a linear transformation P (which itself is an n × n matrix). PCA will find P that transforms X to Y linearly, that is, XP=Y. The columns of P are a new set of basis vectors for representing observations (rows) in X, and are called principal components of X.
+Taking as an example our dataset, it would be impossible to represent it in a scatterplot as the number of features that we take in account (and, consequently, the number of dimensions that will be required to create this scatterplot) is too big. PCA in this case is very useful in order to extract as much information as possible to create a two-dimensional representation for our data.
+The clustering process follows the K-Means method, so we use WSS to create and plot the Elbow method to find the optimal number of clusters (that is 4).
+Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA. 
+
 Silhouette score: 0.497176; Calinski Harabasz score. 10853.142409; Davies Bouldin score: 0.745792
 
-As you can see the difference between the majority of the scores is very small, but if we had to chosse a 'winner' among the algorothms we can say that K-means, as we also expacted, has been the most efficient method. It has in fact the hoghest score in the Silhouette and Calinski scores, which, as we already explained, need to be as high as possible to tell us that the algorithm performed well.
+As you can see the difference between the majority of the scores is very small, but if we had to choose a 'winner' among the algorithms we can say that K-means, as we also expacted, has been the most efficient method. It has in fact the hoghest score in the Silhouette and Calinski scores, which, as we already explained, need to be as high as possible to tell us that the algorithm performed well.
 
 
 
@@ -186,10 +211,20 @@ The goal of PCA is to identify the most meaningful basis to re-express data. Thi
 Let X be a dataset with m observations and n features, so X is an m × n matrix. Let Y be a new representation of X, another m × n matrix related to X by a linear transformation P (which itself is an n × n matrix). PCA will find P that transforms X to Y linearly, that is, XP=Y. The columns of P are a new set of basis vectors for representing observations (rows) in X, and are called principal components of X.
 Taking as an example our dataset, it would be impossible to represent it in a scatterplot as the number of features that we take in account (and, consequently, the number of dimensions that will be required to create this scatterplot) is too big. PCA in this case is very useful in order to extract as much information as possible to create a two-dimensional representation for our data.
 The clustering process follows the K-Means method, so we use WSS to create and plot the Elbow method to find the optimal number of clusters (that is 4).
-Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA. 
+Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA.  
+
+![Pca barplot.png](https://github.com/Albofornari/275841/blob/main/Images/Pca%20barplot.png)
+
+
 
 pca = PCA(2)
 data2 = pca.fit_transform(rfm_std)
 
 Next we plot and check the variance of the components.
 Finally we can visualize our scatterplot including our 2 Principal Components created thanks to PCA and the data divided in the 4 clusters with the corresponding centroids. The scores will be more accurate than the ones of K-Means clustering as we selected a smaller, but more significant, part of the dataset.
+
+
+CONCLUSIONS
+
+All the work above was done to find some interesting values such as the minimim, maximum, mean and median of the K means and the Hierarchical clustering technique. However after all the analysis done and the graphical representations of the clustering methods, we can deduce that our Brazilian customers can clrearly be divided into four different groups. This four groups all have different characteristics; especially we have a group costumers that are now spending in our stores and costumers that are no longer doing it and we can notice this thanks to the Recency. We also have a group of costumers that are actively spending a high amount of money in our stores and this can be highlighted in every clustering procedure.
+In conclusion, we would definitely invest in advertising addressed to those customers that are not longer doing shopping in our stores, for example giving away some little discounts or coupons, while trying to keep the good relationship with those ones who are used to spend a higher amount of money.

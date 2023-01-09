@@ -1,3 +1,4 @@
 # Ai and ML final project
  progetto finale di machine learning
-![Kmeans Clustering 3D.png](Images%2FKmeans%20Clustering%203D.png)
+![Kmeans Clustering 3D.png](https://github.com/Albofornari/275841/blob/main/Images/Kmeans%20Clustering%203D.png)
+![Dendogram HC.png](https://github.com/Albofornari/275841/blob/main/Images/Dendogram%20HC.png)

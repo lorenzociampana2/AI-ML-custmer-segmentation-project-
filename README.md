@@ -165,3 +165,21 @@ Before starting with the algorithms themselves, let us explain which validation 
 - Calinski Harabasz Score: can be used to evaluate the model when ground truth labels are not known where the validation of how well the clustering has been done is made using quantities and features inherent to the dataset. Higher value of CH index means the clusters are dense and well separated, although there is no “acceptable” cut-off value.
 
 After that, we applied the three methods that we chose and here we have the results 
+
+PRINCIPAL COMPONENT ANALYSIS:
+
+The goal of PCA is to identify the most meaningful basis to re-express data. This new basis will filter out the noise and reveal hidden structures. We want the new basis to be a linear combination of the original basis.
+
+Let X be a dataset with m observations and n features, so X is an m × n matrix. Let Y be a new representation of X, another m × n matrix related to X by a linear transformation P (which itself is an n × n matrix). PCA will find P that transforms X to Y linearly, that is, XP=Y. The columns of P are a new set of basis vectors for representing observations (rows) in X, and are called principal components of X.
+
+Taking as an example our dataset, it would be impossible to represent it in a scatterplot as the number of features that we take in account (and, consequently, the number of dimensions that will be required to create this scatterplot) is too big. PCA in this case is very useful in order to extract as much information as possible to create a two-dimensional representation for our data.
+
+The clustering process follows the K-Means method, so we use WSS to create and plot the Elbow method to find the optimal number of clusters (that is 4).
+
+Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA.
+pca = PCA(2)
+data2 = pca.fit_transform(rfm_std)
+
+Next we plot and check the variance of the components.
+
+Finally we can visualize our scatterplot including our 2 Principal Components created thanks to PCA and the data divided in the 4 clusters with the corresponding centroids. The scores will be more accurate than the ones of K-Means clustering as we selected a smaller, but more significant, part of the dataset.

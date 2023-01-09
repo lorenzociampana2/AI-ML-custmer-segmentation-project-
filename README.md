@@ -25,7 +25,8 @@ In order to perform a good clustering among customers, we decided to use the fol
 PROJECT CORE:
 
 Let’s now dive into the steps that we followed to have a clear visualization of the dataset, which can be divided as follows:
--	EDA (Exploratory Data Analysis):
+EDA (Exploratory Data Analysis):
+
 This process is very important for every type of data analysis project as it allows us to have an overall overview of the data, to understand if there are any type of anomalies or null values or just to make some initial assumptions of the data frame. 
 In our case it was very propaedeutic because the majority of the future steps won’t have been that precise without a proper data cleaning.
 Here we have some examples of our EDA with some plots:
@@ -134,7 +135,8 @@ index     payment_type
  
 
 
--	RFM Analysis:
+RFM Analysis:
+
 We now dive into the RFM analysis. 
 As we already explained the meaning of RFM, let us show the steps that we performed to compute it keeping in mind that for each of the three components we followed the same “schema”: we started by computing the score and then we calculated the mean, standard deviation, the maximum and the minimum for each score.
 1)	RECENCY:
@@ -145,6 +147,21 @@ As this score represents the total number of purchases made by a customer, it is
 Also this computation is quite fast and intuitive. We calculated it by summing all the payment values
 
 After computing the RFM scores, we want to convert them into a single variable from 1 to 5 in order to create a first segmentation of the customers based on the RFM. Then we will assign each customer to a cluster based on its values of mean, standard deviation, max and min.
+For what concerns Recency, we know that the mean is 72 days, so we thought that giving 4 to those customers that haven't bought for 20-65 days was the best option. For the other intervals of time, we kept it quite large considering that the strandard deviation for this score is 42 days.
+With frequency we have been instead a little bit more ‘generous’ because, considering that the maximum amount of items bought is 13 and that, on average, the items bought are between 1 anmd 2, we think that a customer who bought more than 9 items can be considered a customer of level 5.
+The mean for monetary value was 395, which seems to be quite a normal average of money spent, so we assigned to level 5 only who spent more than 500 euros and we thought that it was fair to go down 1 level proportiionally to 100 euros spent.
+After that, as we wanted, we performed a first classification of the customers based on the previous numerical values that we assigned by recognizing 10 different types of customers, which are: hibernating, at risk, customers that can't be lost, about to sleep (almost lost), need attention, loyal customers, promising customers, new customers, potential loyalists, TOP customers.
+To have a clearer visualization of the dataset after all this computations, we created new dedicated columns in order to create a new dataframe "rfm_data" where we can view only the columns of interest.
+In conclusion of this first data analysis part, we plotted a pie chart to see the percentage of each group of customers and a distplot, which allows us to see the distributino of each score of RFM.
 
 
+CLUSTERING ALGORITHMS:
 
+Let's now dive into the clustering algorithm application, so that we can do a deeper investigation on our dataset and on our customers, now that we have a lot of informations about them.
+Before starting with the algorithms themselves, let us explain which validation metrics we used to evaluate the efficency of each method:
+
+- Davies Bouldin score: The score is defined as the average similarity measure of each cluster with its most similar cluster, where similarity is the ratio of within-cluster distances to between-cluster distances. Thus, clusters which are farther apart and less dispersed will result in a better score. The minimum score is zero, with lower values indicating better clustering.
+- Silhouette Score: Silhouette score or silhouette coefficient is a metric whose values are in the interval [-1, 1]. The silhouette value is a measure of how similar an object is to its own cluster (cohesion) compared to other clusters (separation). a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters. If most objects have a high value, then the clustering configuration is appropriate. If many points have a low or negative value, then the clustering configuration may have too many or too few clusters.
+- Calinski Harabasz Score: can be used to evaluate the model when ground truth labels are not known where the validation of how well the clustering has been done is made using quantities and features inherent to the dataset. Higher value of CH index means the clusters are dense and well separated, although there is no “acceptable” cut-off value.
+
+After that, we applied the three methods that we chose and here we have the results 

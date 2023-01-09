@@ -6,13 +6,14 @@ Lorenzo Ciampana
 Alberto Fornari
 Alessio Attolico
 
-INTRODUCTION:
+INTRODUCTION: 
 
 Our firm wants to segment the customers in the Brazilian area in order to launch an email campaign which is as more precise and personalized for each type of customer as possible, so that they can target them based on their habits.
 To do it we are going to use a very common business analysis method, which is the RFM:
 -	Recency: time since a customer’s last purchase
 -	Frequency: total number of purchases of a customer
 -	Monetary value: total amount of money spent by a customer
+
 
 CLUSTERING METHODS:
 
@@ -70,12 +71,12 @@ analyzing some variables, we noticed that in some plots there are data points th
 
 plt.figure() 
 data.reset_index().plot(kind='scatter', x='index', y='payment_value', c='gray')
-![payment_value_outliers.png](payment_value_outliers.png)
+![Payment value and index.png](https://github.com/Albofornari/275841/blob/main/Images/Payment%20value%20and%20index.png)
  
 mean_pv = data["payment_value"].mean()  #result mean = 195
 std_pv = data["payment_value"].std()    #result Standard Deviation = 295.5
 print(mean_pv)
-print(std_pv) 
+print(std_pv)
 
 results:
 
@@ -111,13 +112,14 @@ Sns.distplot(data[‘price’])
 Now that we have visualized out data in different ways, we can extract from it some insights. To do It we imagine to ask ourselves some questions that we consider to be interesting about the dataset which are the following:
 
 1)	Where do most customers come from?  
-![customers per state.png](customers%20per%20state.png)
+![Num of costumer per state and cities with most costumers.png](https://github.com/Albofornari/275841/blob/main/Images/Num%20of%20costumer%20per%20state%20and%20cities%20with%20most%20costumers.png)
 
 2)	What are the most frequent items bought?
 Here we calculated the top 10 items bought
+![Top 10 product categories.png](https://github.com/Albofornari/275841/blob/main/Images/Top%2010%20product%20categories.png)
  
 And the lowest 10 items bougth
- 
+![lowest 10 products ordered.png](https://github.com/Albofornari/275841/blob/main/Images/lowest%2010%20products%20ordered.png)
 It turns out that Bed and bath products are the most ordered products followed by beauty products and housewares, while the lowest are musical products, followed by flowers and children clothes.
 3)	Which are the most common payment types?
 
@@ -129,10 +131,10 @@ index     payment_type
 	The result is credit card
 
 4)	Which are the number of orders per payment type?
- 
+![Order by payment Type.png](https://github.com/Albofornari/275841/blob/main/Images/Order%20by%20payment%20Type.png)
 
 5)	Which is the number of orders with number of payment installments?
- 
+![Count of orders with number of payment installments.png](https://github.com/Albofornari/275841/blob/main/Images/Count%20of%20orders%20with%20number%20of%20payment%20installments.png)
 
 
 RFM Analysis:
@@ -152,10 +154,9 @@ With frequency we have been instead a little bit more ‘generous’ because, co
 The mean for monetary value was 395, which seems to be quite a normal average of money spent, so we assigned to level 5 only who spent more than 500 euros and we thought that it was fair to go down 1 level proportiionally to 100 euros spent.
 After that, as we wanted, we performed a first classification of the customers based on the previous numerical values that we assigned by recognizing 10 different types of customers, which are: hibernating, at risk, customers that can't be lost, about to sleep (almost lost), need attention, loyal customers, promising customers, new customers, potential loyalists, TOP customers.
 To have a clearer visualization of the dataset after all this computations, we created new dedicated columns in order to create a new dataframe "rfm_data" where we can view only the columns of interest.
-In conclusion of this first data analysis part, we plotted a pie chart to see the percentage of each group of customers and a distplot, which allows us to see the distributino of each score of RFM.
+In the end we used a distplot to see the distribution of each score of RFM.
 
-
-CLUSTERING ALGORITHMS:
+CLUSTERING ALGORITHMS: 
 
 Let's now dive into the clustering algorithm application, so that we can do a deeper investigation on our dataset and on our customers, now that we have a lot of informations about them.
 Before starting with the algorithms themselves, let us explain which validation metrics we used to evaluate the efficency of each method:
@@ -164,22 +165,19 @@ Before starting with the algorithms themselves, let us explain which validation 
 - Silhouette Score: Silhouette score or silhouette coefficient is a metric whose values are in the interval [-1, 1]. The silhouette value is a measure of how similar an object is to its own cluster (cohesion) compared to other clusters (separation). a high value indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters. If most objects have a high value, then the clustering configuration is appropriate. If many points have a low or negative value, then the clustering configuration may have too many or too few clusters.
 - Calinski Harabasz Score: can be used to evaluate the model when ground truth labels are not known where the validation of how well the clustering has been done is made using quantities and features inherent to the dataset. Higher value of CH index means the clusters are dense and well separated, although there is no “acceptable” cut-off value.
 
-After that, we applied the three methods that we chose and here we have the results 
+After that, we applied the three methods that we chose and here we have the results for each of them:
 
-PRINCIPAL COMPONENT ANALYSIS:
+
+PRINCIPAL COMPONENT ANALYSIS: 
 
 The goal of PCA is to identify the most meaningful basis to re-express data. This new basis will filter out the noise and reveal hidden structures. We want the new basis to be a linear combination of the original basis.
-
 Let X be a dataset with m observations and n features, so X is an m × n matrix. Let Y be a new representation of X, another m × n matrix related to X by a linear transformation P (which itself is an n × n matrix). PCA will find P that transforms X to Y linearly, that is, XP=Y. The columns of P are a new set of basis vectors for representing observations (rows) in X, and are called principal components of X.
-
 Taking as an example our dataset, it would be impossible to represent it in a scatterplot as the number of features that we take in account (and, consequently, the number of dimensions that will be required to create this scatterplot) is too big. PCA in this case is very useful in order to extract as much information as possible to create a two-dimensional representation for our data.
-
 The clustering process follows the K-Means method, so we use WSS to create and plot the Elbow method to find the optimal number of clusters (that is 4).
+Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA. 
 
-Then we convert our dataset from multidimensions to 2 dimensions thanks to PCA.
 pca = PCA(2)
 data2 = pca.fit_transform(rfm_std)
 
 Next we plot and check the variance of the components.
-
 Finally we can visualize our scatterplot including our 2 Principal Components created thanks to PCA and the data divided in the 4 clusters with the corresponding centroids. The scores will be more accurate than the ones of K-Means clustering as we selected a smaller, but more significant, part of the dataset.

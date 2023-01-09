@@ -167,6 +167,18 @@ Before starting with the algorithms themselves, let us explain which validation 
 
 After that, we applied the three methods that we chose and here we have the results for each of them:
 
+Hierarchical Clustering: 
+Silhouette Score: 0.457153; Calinski Harabasz Score: 8814.023578; Davies Bouldin Score: 0.825724
+
+K-Means:
+Silhouette score: 0.497172; Calinski Harabasz score: 10853.192306; Davies Bouldin: 0.745792
+
+PCA: 
+Silhouette score: 0.497176; Calinski Harabasz score. 10853.142409; Davies Bouldin score: 0.745792
+
+As you can see the difference between the majority of the scores is very small, but if we had to chosse a 'winner' among the algorothms we can say that K-means, as we also expacted, has been the most efficient method. It has in fact the hoghest score in the Silhouette and Calinski scores, which, as we already explained, need to be as high as possible to tell us that the algorithm performed well.
+
+
 
 PRINCIPAL COMPONENT ANALYSIS: 
 

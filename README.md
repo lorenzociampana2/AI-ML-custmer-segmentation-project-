@@ -69,7 +69,7 @@ analyzing some variables, we noticed that in some plots there are data points th
 
 plt.figure() 
 data.reset_index().plot(kind='scatter', x='index', y='payment_value', c='gray')
-![payment_value_outliers.png]()
+![payment_value_outliers.png](payment_value_outliers.png)
  
 mean_pv = data["payment_value"].mean()  #result mean = 195
 std_pv = data["payment_value"].std()    #result Standard Deviation = 295.5

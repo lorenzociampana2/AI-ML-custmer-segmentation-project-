@@ -110,6 +110,7 @@ Sns.distplot(data[‘price’])
 Now that we have visualized out data in different ways, we can extract from it some insights. To do It we imagine to ask ourselves some questions that we consider to be interesting about the dataset which are the following:
 
 1)	Where do most customers come from?  
+![customers per state.png](customers%20per%20state.png)
 
 2)	What are the most frequent items bought?
 Here we calculated the top 10 items bought

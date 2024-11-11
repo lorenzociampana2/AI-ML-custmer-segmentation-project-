@@ -2,8 +2,8 @@
 CUSTOMER SEGMENTATION PROJECT
 Luiss, Aa. 2022/23
 
-Lorenzo Ciampana 
-Alberto Fornari
+Lorenzo Ciampana, 
+Alberto Fornari,
 Alessio Attolico
 
 INTRODUCTION: 
